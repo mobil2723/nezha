@@ -270,32 +270,46 @@ EOF
 
     chmod +x start.sh
 
-    #!/bin/bash
+    # 创建停止脚本
+    info "创建停止脚本..."
+    cat > stop.sh << 'EOF'
+#!/bin/bash
+
+# 颜色定义
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+blue='\033[0;36m'
+plain='\033[0m'
+
+# 输出函数
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> logs/nezha-agent.log
+}
 
 # 停止所有nezha-agent进程
-echo "正在停止所有哪吒探针进程..."
+echo -e "${blue}正在停止所有哪吒探针进程...${plain}"
+log "正在停止所有哪吒探针进程..."
 ps aux | grep "[n]ezha-agent" | awk '{print $2}' | xargs kill -9 2>/dev/null || true
 ps aux | grep "[t]ee -a logs/nezha-agent.log" | awk '{print $2}' | xargs kill -9 2>/dev/null || true
 
 # 检查是否还有进程存在
 if ps aux | grep -q "[n]ezha-agent"; then
-    echo "警告：仍有哪吒探针进程在运行。"
+    echo -e "${yellow}警告：仍有哪吒探针进程在运行。${plain}"
+    log "警告：仍有哪吒探针进程在运行。"
     ps aux | grep "[n]ezha-agent"
 else
-    echo "所有哪吒探针进程已停止。"
+    echo -e "${green}所有哪吒探针进程已停止。${plain}"
+    log "所有哪吒探针进程已停止。"
 fi
 
 # 清理临时文件
-echo "正在清理PID文件和配置文件..."
-rm -f ./nezha/nezha-agent.pid 2>/dev/null || true
-rm -f ./nezha/config.json 2>/dev/null || true
+echo -e "${blue}正在清理PID文件...${plain}"
+log "正在清理PID文件..."
+rm -f ./nezha-agent.pid 2>/dev/null || true
 
-# 清理日志
-echo "清理旧日志文件..."
-rm -f ./nezha/logs/nezha-agent.log 2>/dev/null || true
-mkdir -p ./nezha/logs
-
-echo "清理完成！" 
+echo -e "${green}清理完成！${plain}"
+log "清理完成！"
 EOF
 
     chmod +x stop.sh
