@@ -129,7 +129,8 @@ main() {
     cleanup
 
     # 设置安装目录
-    INSTALL_DIR="./nezha"
+    NZ_TANZHEN_PATH="$HOME/.nezha"
+    INSTALL_DIR="$NZ_TANZHEN_PATH/tanzhen"
     LOG_DIR="$INSTALL_DIR/logs"
 
     # 创建必要的目录
